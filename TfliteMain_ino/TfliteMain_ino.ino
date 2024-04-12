@@ -9,13 +9,13 @@ const int flexSensorPins[] = {A0, A1, A2, A3};
 const int numFlexSensors = 4;
 
 // Create a TensorFlow Lite interpreter
-TfLiteTensor* input;
-TfLiteTensor* output;
-TfLiteInterpreter* interpreter;
+TfLiteTensor *input;
+TfLiteTensor *output;
+TfLiteInterpreter *interpreter;
 
 // Define min and max values for normalization
 const int minSensorValue = 0;
-const int maxSensorValue = 1023;  // Assuming 10-bit ADC resolution
+const int maxSensorValue = 1023; // Assuming 10-bit ADC resolution
 
 // Define the RX and TX pins for Bluetooth communication
 const int bluetoothRxPin = 2; // RX pin of the Bluetooth module
@@ -24,7 +24,8 @@ const int bluetoothTxPin = 3; // TX pin of the Bluetooth module
 // Initialize a SoftwareSerial object for Bluetooth communication
 SoftwareSerial bluetoothSerial(bluetoothRxPin, bluetoothTxPin);
 
-void setup() {
+void setup()
+{
   // Initialize serial communication for debugging
   Serial.begin(9600);
 
@@ -34,24 +35,27 @@ void setup() {
   // Initialize TensorFlow Lite interpreter
   interpreter = tflite::GetModel(ml_model);
   interpreter->AllocateTensors();
-  
+
   // Get input and output tensors
   input = interpreter->input(0);
   output = interpreter->output(0);
 }
 
-void loop() {
+void loop()
+{
   // Read analog values from all flex sensors
   float flexValues[numFlexSensors];
-  for (int i = 0; i < numFlexSensors; i++) {
+  for (int i = 0; i < numFlexSensors; i++)
+  {
     int flexValue = analogRead(flexSensorPins[i]);
     // Preprocess sensor data: normalize to range [0, 1]
-    float normalizedValue = map(flexValue, minSensorValue, maxSensorValue, 0, 1); 
+    float normalizedValue = map(flexValue, minSensorValue, maxSensorValue, 0, 1);
     flexValues[i] = normalizedValue;
   }
 
   // Set input tensor values
-  for (int i = 0; i < numFlexSensors; i++) {
+  for (int i = 0; i < numFlexSensors; i++)
+  {
     input->data.f[i] = flexValues[i];
   }
 
